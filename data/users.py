@@ -11,10 +11,11 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
                            primary_key=True, autoincrement=True)
     surname = sqlalchemy.Column(sqlalchemy.String)
     name = sqlalchemy.Column(sqlalchemy.String)
-    school = sqlalchemy.Column(sqlalchemy.Integer)
-    classClub = sqlalchemy.Column(sqlalchemy.String)
+    school = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
+    position = sqlalchemy.Column(sqlalchemy.String)
+    classClub = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     email = sqlalchemy.Column(sqlalchemy.String, unique=True)
-    verified = sqlalchemy.Column(sqlalchemy.Boolean)
+    verified = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
     hashed_password = sqlalchemy.Column(sqlalchemy.String)
 
     def set_password(self, password):

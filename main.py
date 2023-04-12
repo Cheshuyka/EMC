@@ -1,6 +1,6 @@
 from data import db_session
-from flask import Flask, render_template, redirect
-from flask_login import LoginManager, login_user, login_required, logout_user
+from flask import Flask, render_template, redirect, request
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from data.users import User
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, StringField, BooleanField, SubmitField, EmailField, PasswordField
@@ -17,9 +17,6 @@ login_manager.init_app(app)
 class RegisterForm(FlaskForm):
     name = StringField('Имя', validators=[DataRequired()])
     surname = StringField('Фамилия', validators=[DataRequired()])
-    school = IntegerField('ID школы', validators=[DataRequired()])
-    classNum = IntegerField('Номер класса', validators=[DataRequired()])
-    classLet = StringField('Буква класса', validators=[DataRequired()])
     email = EmailField('Почта', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
     password_again = PasswordField('Повторите пароль', validators=[DataRequired()])
@@ -35,7 +32,6 @@ class LoginForm(FlaskForm):
 
 @login_manager.user_loader
 def load_user(user_id):
-    db_session.global_init('db/EMC.db')
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
 
@@ -53,18 +49,20 @@ def register():
             return render_template('register.html', title='Регистрация',
                                    form=form,
                                    message="Пароли не совпадают")
-        db_session.global_init('db/EMC.db')
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.email == form.email.data).first():
             return render_template('register.html', title='Регистрация',
-                                   form=form,
-                                   message="Такой пользователь уже есть")
+                                   form=form, message="Такой пользователь уже есть", background='white')
+        if form.teacher.data:
+            position = 'учитель'
+        else:
+            position = 'ученик'
         user = User(
             surname=form.surname.data,
             name=form.name.data,
             school=form.school.data,
             classClub=str(form.classNum.data) + form.classLet.data,
-            verified=False,
+            position=position,
             email=form.email.data)
         user.set_password(form.password.data)
         db_sess.add(user)
@@ -78,7 +76,6 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        db_session.global_init('db/EMC.db')
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
@@ -97,5 +94,17 @@ def logout():
     return redirect("/")
 
 
+@app.route('/change_profile', methods=['POST', 'GET'])
+def change():
+    print(request.args['position'])
+    return redirect('/profile')
+
+
+@app.route('/profile')
+def profile():
+    return render_template('profile.html', title='Авторизация')
+
+
 if __name__ == '__main__':
+    db_session.global_init('db/EMC.db')
     app.run()

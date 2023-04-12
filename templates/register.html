@@ -23,33 +23,6 @@
             {% endfor %}
         </p>
         <p>
-            {{ form.school.label }}<br>
-            {{ form.school(class="form-control", type="school") }}<br>
-            {% for error in form.school.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.classNum.label }}<br>
-            {{ form.classNum(class="form-control", type="class") }}<br>
-            {% for error in form.classNum.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.classLet.label }}<br>
-            {{ form.classLet(class="form-control", type="class") }}<br>
-            {% for error in form.classLet.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
-            {% endfor %}
-        </p>
-        <p>
             {{ form.email.label }}<br>
             {{ form.email(class="form-control", type="email") }}<br>
             {% for error in form.email.errors %}

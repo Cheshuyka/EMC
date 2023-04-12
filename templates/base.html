@@ -11,10 +11,9 @@
 <div class="collapse" id="navbarToggleExternalContent">
   <div class="bg-dark p-4">
     <h5 class="text-warning bg-dark">Education Modern Cloud</h5>
-        <a class="nav-link active" aria-current="page" href="#">Active</a>
         <p>
-            <a href="#" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Warning link</a>
-            <a href="#" style="margin-left: 20px" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Warning link</a>
+            <a href="#" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Потерянные вещи</a>
+            <a href="#" style="margin-left: 20px" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Мероприятия</a>
         </p>
   </div>
 </div>
@@ -25,7 +24,7 @@
     </button>
       {% if current_user.is_authenticated %}
         <p>
-            <a style="font-size: 30px; margin-right: 30px;" class="text-light link-underline-opacity-0" href="/logout">{{ current_user.surname }} {{ current_user.name }}</a>
+            <a style="font-size: 30px; margin-right: 30px;" class="text-light link-underline-opacity-0" href="/profile">{{ current_user.surname }} {{ current_user.name }}</a>
             <a href="/logout" type="button" class="btn btn-dark">EXIT</a>
         </p>
     {% else %}

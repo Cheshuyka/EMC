@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div><h1 style="margin-top: 20px">Профиль</h1><a type="button" class="btn btn-outline-info" href="/register">Отправить заявку</a></div>
+    <form action="change_profile" method="get | post">
+    <div class="input-group mb-3" style="margin-top: 20px">
+        <span class="input-group-text link-offset-2 link-underline link-underline-opacity-0" id="name">Имя</span>
+            <input type="text" name="name" class="form-control" placeholder="{{ current_user.name }}" aria-label="Username" aria-describedby="basic-addon1">
+    </div>
+    <div class="input-group mb-3" style="margin-top: 20px">
+        <span class="input-group-text link-offset-2 link-underline link-underline-opacity-0" id="surname">Фамилия</span>
+            <input type="text" name="surname" class="form-control" placeholder="{{ current_user.surname }}" aria-label="Username" aria-describedby="basic-addon1">
+    </div>
+    <div class="input-group mb-3" style="margin-top: 20px">
+        <span class="input-group-text link-offset-2 link-underline link-underline-opacity-0" id="school">Школа</span>
+            <input type="text" name="school" class="form-control" placeholder="{{ current_user.school }}" aria-label="Username" aria-describedby="basic-addon1">
+    </div>
+     <div class="input-group mb-3" style="margin-top: 20px">
+        <span class="input-group-text link-offset-2 link-underline link-underline-opacity-0" id="classClub">Класс (цифра и буква)</span>
+            <input type="text" name="classClub" class="form-control" placeholder="{{ current_user.classClub }}" aria-label="Username" aria-describedby="basic-addon1">
+    </div>
+    <div class="input-group mb-3" style="margin-top: 20px">
+        <span class="input-group-text link-offset-2 link-underline link-underline-opacity-0" id="email">Почта</span>
+            <input type="text" name="email" class="form-control" placeholder="{{ current_user.email }}" aria-label="Username" aria-describedby="basic-addon1">
+    </div>
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="position">Специальность</label>
+            <select class="form-select" id="position" name="position">
+                <option selected>Выбрать...</option>
+                <option value="1">Ученик</option>
+                <option value="2">Учитель</option>
+                <option value="3">Админ школы</option>
+            </select>
+        </div>
+        <input type="submit" value="Сохранить изменения" class="btn btn-outline-success">
+    </form>
+{% endblock %}
