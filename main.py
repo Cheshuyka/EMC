@@ -114,6 +114,16 @@ def profile():
     return render_template('profile.html', title='Авторизация')
 
 
+@app.route('/requests')
+def requests():
+    db_sess = db_session.create_session()
+    if current_user.position == 'Учитель':
+        users = db_sess.query(User).filter(User.position == 'Ученик').all()
+    elif current_user.position == 'Админ школы':
+        users = db_sess.query(User).filter(User.position == 'Учитель' or User.position == 'Ученик').all()
+    return render_template('requests.html', title='Авторизация', users=users)
+
+
 if __name__ == '__main__':
     db_session.global_init('db/EMC.db')
     app.run()

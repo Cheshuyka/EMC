@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% for user in users %}
+<div class="card" style="width: 18rem;">
+  <div class="card-header">
+    {{ user.name }} {{ user.surname }}
+  </div>
+  <ul class="list-group list-group-flush">
+    {% if current_user.position == 'Админ школы' %}
+    <li class="list-group-item">Школа {{ user.school }}</li>
+    {% endif %}
+    <li class="list-group-item">{{ user.position }}</li>
+    {% if current_user.position == 'Учитель' %}
+    <li class="list-group-item">Класс {{ user.classClub }}</li>
+    {% endif %}
+    <li class="list-group-item">{{ user.email }}</li>
+  </ul>
+</div>
+<br><br><br>
+{% endfor %}
+{% endblock %}
