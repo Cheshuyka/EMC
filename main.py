@@ -1,7 +1,7 @@
-from EMC.data import db_session
+from data import db_session
 from flask import Flask, render_template, redirect
 from flask_login import LoginManager, login_user, login_required, logout_user
-from EMC.data.users import User
+from data.users import User
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, StringField, BooleanField, SubmitField, EmailField, PasswordField
 from wtforms.validators import DataRequired
