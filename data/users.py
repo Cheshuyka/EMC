@@ -12,11 +12,12 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     surname = sqlalchemy.Column(sqlalchemy.String)
     name = sqlalchemy.Column(sqlalchemy.String)
     school = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
-    position = sqlalchemy.Column(sqlalchemy.String)
+    position = sqlalchemy.Column(sqlalchemy.String, default='Не выбрано')
     classClub = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     email = sqlalchemy.Column(sqlalchemy.String, unique=True)
-    verified = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
+    verified = sqlalchemy.Column(sqlalchemy.Integer, default=0)  # 0: заявка не была подана; 1: в заявке отказано; 2: заявка принята
     hashed_password = sqlalchemy.Column(sqlalchemy.String)
+    whyCancelled = sqlalchemy.Column(sqlalchemy.String, default='Вам еще не отказывали')
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

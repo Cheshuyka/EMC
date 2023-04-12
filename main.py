@@ -1,5 +1,5 @@
 from data import db_session
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, abort
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from data.users import User
 from flask_wtf import FlaskForm
@@ -53,16 +53,9 @@ def register():
         if db_sess.query(User).filter(User.email == form.email.data).first():
             return render_template('register.html', title='Регистрация',
                                    form=form, message="Такой пользователь уже есть", background='white')
-        if form.teacher.data:
-            position = 'учитель'
-        else:
-            position = 'ученик'
         user = User(
             surname=form.surname.data,
             name=form.name.data,
-            school=form.school.data,
-            classClub=str(form.classNum.data) + form.classLet.data,
-            position=position,
             email=form.email.data)
         user.set_password(form.password.data)
         db_sess.add(user)
@@ -96,7 +89,23 @@ def logout():
 
 @app.route('/change_profile', methods=['POST', 'GET'])
 def change():
-    print(request.args['position'])
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.id == current_user.id).first()
+    if not(user):
+        abort(520)
+    if len(request.args['name']) > 0:
+        user.name = request.args['name']
+    if len(request.args['surname']) > 0:
+        user.surname = request.args['surname']
+    if len(request.args['school']) > 0:
+        user.school = request.args['school']
+    if request.args['position'] != 'Не выбрано':
+        user.position = request.args['position']
+    if len(request.args['classClub']) > 0:
+        user.classClub = request.args['classClub']
+    if len(request.args['email']) > 0:
+        user.email = request.args['email']
+    db_sess.commit()
     return redirect('/profile')
 
 

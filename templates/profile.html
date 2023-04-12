@@ -26,12 +26,14 @@
         <div class="input-group mb-3">
             <label class="input-group-text" for="position">Специальность</label>
             <select class="form-select" id="position" name="position">
-                <option selected>Выбрать...</option>
-                <option value="1">Ученик</option>
-                <option value="2">Учитель</option>
-                <option value="3">Админ школы</option>
+                <option selected>{{ current_user.position }}</option>
+                <option value="Ученик">Ученик</option>
+                <option value="Учитель">Учитель</option>
+                <option value="Админ школы">Админ школы</option>
             </select>
         </div>
         <input type="submit" value="Сохранить изменения" class="btn btn-outline-success">
-    </form>
+    </form><br><br>
+    <h2>Причина получения отказа в прошлый раз:</h2>
+    <p>{{ current_user.whyCancelled }}</p>
 {% endblock %}
