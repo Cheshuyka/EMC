@@ -2,6 +2,7 @@ from data import db_session
 from flask import Flask, render_template, redirect, request, abort
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from data.users import User
+from data.schools import School
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, StringField, BooleanField, SubmitField, EmailField, PasswordField
 from wtforms.validators import DataRequired
@@ -28,6 +29,12 @@ class LoginForm(FlaskForm):
     password = PasswordField('Пароль', validators=[DataRequired()])
     remember_me = BooleanField('Запомнить меня')
     submit = SubmitField('Войти')
+
+
+class AddSchool(FlaskForm):
+    name = EmailField('Название школы', validators=[DataRequired()])
+    idAdmin = IntegerField('ID Админа', validators=[DataRequired()])
+    submit = SubmitField('Добавить')
 
 
 @login_manager.user_loader
@@ -114,7 +121,7 @@ def profile():
     return render_template('profile.html', title='Авторизация')
 
 
-@app.route('/requests')
+@app.route('/requests', methods=['GET', 'POST'])
 def requests():
     db_sess = db_session.create_session()
     if current_user.position == 'Учитель':
@@ -124,6 +131,38 @@ def requests():
     return render_template('requests.html', title='Авторизация', users=users)
 
 
+@app.route('/schools', methods=['GET', 'POST'])
+def schools():
+    form = AddSchool()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        school = db_sess.query(School).filter(School.title == form.name.data).first()
+        admin = db_sess.query(User).filter(User.id == form.idAdmin.data).first()
+        if school or not(admin):
+            return render_template('school.html', form=form, title='Добавление школы')
+        if admin.position != 'Админ школы':
+            return render_template('school.html', form=form, title='Добавление школы')
+        school = School(title=form.name.data)
+        db_sess.add(school)
+        school = db_sess.query(School).filter(School.title == school.title).first()
+        admin.school = school.id
+        admin.verified = 2
+        db_sess.commit()
+        return redirect('/')
+    return render_template('school.html', title='Добавление школы', form=form)
+
+
 if __name__ == '__main__':
     db_session.global_init('db/EMC.db')
+    # db_sess = db_session.create_session()
+    # user = User(
+    #    surname='Власов',
+    #    name='Илья',
+    #    position='Админ школы',
+    #    email='chief@gmail.com',
+    #    verified=2
+    # )
+    # user.set_password('268268268268a')
+    # db_sess.add(user)
+    # db_sess.commit()
     app.run()
