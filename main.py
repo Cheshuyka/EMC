@@ -146,9 +146,11 @@ def profile():
 def requests():
     db_sess = db_session.create_session()
     if current_user.position == 'Учитель':
-        users = db_sess.query(User).filter(User.position == 'Ученик', User.verified == 0).all()
+        users = db_sess.query(User).filter(User.position == 'Ученик', User.classClub == current_user.classClub,
+                                           User.verified == 0, User.school == current_user.school).all()
     elif current_user.position == 'Админ школы':
-        users = db_sess.query(User).filter((User.position == 'Учитель') | (User.position == 'Ученик'), User.verified == 0).all()
+        users = db_sess.query(User).filter((User.position == 'Учитель') | (User.position == 'Ученик') | (User.position == 'Админ школы'),
+                                           User.verified == 0, User.school == current_user.school).all()
     return render_template('requests.html', title='Авторизация', users=users)
 
 
