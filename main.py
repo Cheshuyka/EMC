@@ -204,6 +204,12 @@ def cancel_request(id):
     return redirect('/requests')
 
 
+@app.route('/lost')
+@login_required
+def lost():
+    pass
+
+
 def security():  # TODO: проверка юзеров (в случае, если сайт введен в адресной строке)
     pass
 
