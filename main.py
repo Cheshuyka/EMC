@@ -45,7 +45,7 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-    return render_template('base.html', title='EMC')
+    return render_template('mainPage.html', title='EMC')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -95,6 +95,7 @@ def logout():
 
 
 @app.route('/change_profile', methods=['POST', 'GET'])
+@login_required
 def change():
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.id == current_user.id).first()
@@ -117,6 +118,7 @@ def change():
 
 
 @app.route('/send_request', methods=['POST', 'GET'])
+@login_required
 def send_request():
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.id == current_user.id).first()
@@ -138,11 +140,13 @@ def send_request():
 
 
 @app.route('/profile')
+@login_required
 def profile():
     return render_template('profile.html', title='Авторизация')
 
 
 @app.route('/requests', methods=['GET', 'POST'])
+@login_required
 def requests():
     db_sess = db_session.create_session()
     if current_user.position == 'Учитель':
@@ -151,10 +155,13 @@ def requests():
     elif current_user.position == 'Админ школы':
         users = db_sess.query(User).filter((User.position == 'Учитель') | (User.position == 'Ученик') | (User.position == 'Админ школы'),
                                            User.verified == 0, User.school == current_user.school).all()
+    else:
+        abort(403)
     return render_template('requests.html', title='Авторизация', users=users)
 
 
 @app.route('/schools', methods=['GET', 'POST'])
+@login_required
 def schools():
     form = AddSchool()
     if form.validate_on_submit():
@@ -176,6 +183,7 @@ def schools():
 
 
 @app.route('/accept_request/<int:id>')
+@login_required
 def accept_request(id):
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.id == id).first()
@@ -185,6 +193,7 @@ def accept_request(id):
 
 
 @app.route('/cancel_request/<int:id>')
+@login_required
 def cancel_request(id):
     db_sess = db_session.create_session()
     cancel = request.args['cancel']
@@ -193,6 +202,10 @@ def cancel_request(id):
     user.verified = 1
     db_sess.commit()
     return redirect('/requests')
+
+
+def security():  # TODO: проверка юзеров (в случае, если сайт введен в адресной строке)
+    pass
 
 
 if __name__ == '__main__':

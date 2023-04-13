@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <p>
+        <a style="margin-top:50px" class="btn btn-outline-info" data-bs-toggle="collapse" href="#collapseAdmin" role="button" aria-expanded="false" aria-controls="collapseAdmin">
+        Вы администратор учебного заведения?
+        </a>
+    </p>
+    <div class="collapse" id="collapseAdmin">
+        <div class="card card-body">
+            <h5>Просто напишите нам на почту "<span class="text-warning">EMC_connection@gmail.com</span>" и ждите ответа.<br>Это так просто, не правда ли?</h5>
+        </div>
+    </div>
+    <p>
+        <a style="margin-top:30px" class="btn btn-outline-info" data-bs-toggle="collapse" href="#collapseTeacherStudent" role="button" aria-expanded="false" aria-controls="collapseTeacherStudent">
+        Вы учитель или ученик?
+        </a>
+    </p>
+    <div class="collapse" id="collapseTeacherStudent">
+        <div class="card card-body">
+            <h5>
+                1) Для начала <a class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="/register">зарегистрируйтесь</a> на сайте и заполните все необходимые данные<br>
+                2) Затем зайдите в <a class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="/profile">профиль</a> (будучи зарегистрированным)<br>
+                3) Там заполните графы "школа, класс" и в специальности выберите <span class="text-warning">"учитель/ученик"</span>. Нажмите зеленую кнопку "сохранить изменения".<br>
+                4) Если вы верно выполнили предыдущие шаги, то изменения должны были сохраниться.<br>
+                5) В профиле нажмите кнопку "отправить заявку". Теперь остается только ждать действий администрации вашей школы.
+            </h5>
+        </div>
+    </div>
+    <p>
+        <a style="margin-top:30px" class="btn btn-outline-info" data-bs-toggle="collapse" href="#collapseSupport" role="button" aria-expanded="false" aria-controls="collapseSupport">
+        Остались какие-то вопросы?
+        </a>
+    </p>
+    <div class="collapse" id="collapseSupport">
+        <div class="card card-body">
+            <h5>
+                Просто напишите нам на почту "<span class="text-warning">EMC_support@gmail.com</span>" и мы Вам поможем!
+            </h5>
+        </div>
+    </div>
+{% endblock %}

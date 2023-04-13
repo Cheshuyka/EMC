@@ -12,10 +12,24 @@
   <div class="bg-dark p-4">
     <h5 class="text-warning bg-dark">Education Modern Cloud</h5>
         <p>
-            <a href="" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Потерянные вещи</a>
-            <a href="" style="margin-left: 20px" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Мероприятия</a>
-            <a href="/requests" style="margin-left: 20px" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Заявки</a>
-            <a href="/schools" style="margin-left: 20px" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Школы</a>
+            {% if current_user.is_authenticated %}
+                {% if current_user.verified == 2 %}
+                    <a href="" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Потерянные вещи</a>
+                    <a href="" style="margin-left: 20px" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Мероприятия</a>
+                    <a href="/requests" style="margin-left: 20px" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Заявки</a>
+                    <a href="/schools" style="margin-left: 20px" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Школы</a>
+                {% else %}
+                    <a class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Потерянные вещи</a>
+                    <a style="margin-left: 20px" class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Мероприятия</a>
+                    <a style="margin-left: 20px" class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Заявки</a>
+                    <a style="margin-left: 20px" class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Школы</a>
+                {% endif %}
+            {% else %}
+                <a class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Потерянные вещи</a>
+                <a style="margin-left: 20px" class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Мероприятия</a>
+                <a style="margin-left: 20px" class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Заявки</a>
+                <a style="margin-left: 20px" class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Школы</a>
+            {% endif %}
         </p>
   </div>
 </div>
