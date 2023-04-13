@@ -16,6 +16,13 @@
     {% endif %}
     <li class="list-group-item">{{ user.email }}</li>
   </ul>
+  <a href="accept_request/{{ user.id }}" type="button" class="btn btn-outline-success" style="margin-bottom: 20px">Принять</a>
+  <form action="cancel_request/{{ user.id }}" method="get | post">
+  <div class="input-group mb-3">
+    <input type="text" name="cancel" class="form-control" placeholder="Причина отказа" aria-label="Username" aria-describedby="basic-addon1">
+    <input type="submit" value="Отклонить" class="btn btn-outline-warning">
+  </div>
+  </form>
 </div>
 <br><br><br>
 {% endfor %}

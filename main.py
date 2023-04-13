@@ -116,6 +116,27 @@ def change():
     return redirect('/profile')
 
 
+@app.route('/send_request', methods=['POST', 'GET'])
+def send_request():
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.id == current_user.id).first()
+    if user.verified == 0:
+        return render_template('profile.html', message='Заявка уже была подана')
+    if user.school == None:
+        return render_template('profile.html', message='Не указана школа')
+    if user.position == 'Учитель' or user.position == 'Ученик':
+        if user.classClub == None:
+            return render_template('profile.html', message='Не указан класс')
+        user.verified = 0
+        db_sess.commit()
+        return render_template('profile.html', message='Заявка подана')
+    elif user.position == 'Админ школы':
+        user.verified = 0
+        db_sess.commit()
+        return render_template('profile.html', message='Заявка подана')
+    return render_template('profile.html', message='Не выбрана роль')
+
+
 @app.route('/profile')
 def profile():
     return render_template('profile.html', title='Авторизация')
@@ -125,9 +146,9 @@ def profile():
 def requests():
     db_sess = db_session.create_session()
     if current_user.position == 'Учитель':
-        users = db_sess.query(User).filter(User.position == 'Ученик').all()
+        users = db_sess.query(User).filter(User.position == 'Ученик', User.verified == 0).all()
     elif current_user.position == 'Админ школы':
-        users = db_sess.query(User).filter(User.position == 'Учитель' or User.position == 'Ученик').all()
+        users = db_sess.query(User).filter((User.position == 'Учитель') | (User.position == 'Ученик'), User.verified == 0).all()
     return render_template('requests.html', title='Авторизация', users=users)
 
 
@@ -150,6 +171,26 @@ def schools():
         db_sess.commit()
         return redirect('/')
     return render_template('school.html', title='Добавление школы', form=form)
+
+
+@app.route('/accept_request/<int:id>')
+def accept_request(id):
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.id == id).first()
+    user.verified = 2
+    db_sess.commit()
+    return redirect('/requests')
+
+
+@app.route('/cancel_request/<int:id>')
+def cancel_request(id):
+    db_sess = db_session.create_session()
+    cancel = request.args['cancel']
+    user = db_sess.query(User).filter(User.id == id).first()
+    user.whyCancelled = cancel
+    user.verified = 1
+    db_sess.commit()
+    return redirect('/requests')
 
 
 if __name__ == '__main__':

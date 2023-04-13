@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div><h1 style="margin-top: 20px">Профиль</h1><a type="button" class="btn btn-outline-info" href="/register">Отправить заявку</a></div>
+    <div>
+        <h1 style="margin-top: 20px">Профиль</h1>
+        <a type="button" class="btn btn-outline-info" href="/send_request">Отправить заявку</a>
+    </div>
     <form action="change_profile" method="get | post">
     <div class="input-group mb-3" style="margin-top: 20px">
         <span class="input-group-text link-offset-2 link-underline link-underline-opacity-0" id="name">Имя</span>
@@ -12,7 +15,7 @@
             <input type="text" name="surname" class="form-control" placeholder="{{ current_user.surname }}" aria-label="Username" aria-describedby="basic-addon1">
     </div>
     <div class="input-group mb-3" style="margin-top: 20px">
-        <span class="input-group-text link-offset-2 link-underline link-underline-opacity-0" id="school">Школа</span>
+        <span class="input-group-text link-offset-2 link-underline link-underline-opacity-0" id="school">ID Школы</span>
             <input type="text" name="school" class="form-control" placeholder="{{ current_user.school }}" aria-label="Username" aria-describedby="basic-addon1">
     </div>
      <div class="input-group mb-3" style="margin-top: 20px">
@@ -33,7 +36,8 @@
             </select>
         </div>
         <input type="submit" value="Сохранить изменения" class="btn btn-outline-success">
-    </form><br><br>
-    <h2>Причина получения отказа в прошлый раз:</h2>
+    </form>
+    <div style="margin-top: 20px;">{{ message }}</div>
+    <h2 style="margin-top: 20px;">Причина получения отказа в прошлый раз:</h2>
     <p>{{ current_user.whyCancelled }}</p>
 {% endblock %}

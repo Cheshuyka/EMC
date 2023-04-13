@@ -15,7 +15,7 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     position = sqlalchemy.Column(sqlalchemy.String, default='Не выбрано')
     classClub = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     email = sqlalchemy.Column(sqlalchemy.String, unique=True)
-    verified = sqlalchemy.Column(sqlalchemy.Integer, default=0)  # 0: заявка не была подана; 1: в заявке отказано; 2: заявка принята
+    verified = sqlalchemy.Column(sqlalchemy.Integer, default=1)  # 0: заявка рассматривается; 1: в заявке отказано/ее не подавали; 2: заявка принята
     hashed_password = sqlalchemy.Column(sqlalchemy.String)
     whyCancelled = sqlalchemy.Column(sqlalchemy.String, default='Вам еще не отказывали')
 
