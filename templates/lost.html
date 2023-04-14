@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<img src="{{ lost.imageLink }}" alt="Фотография вещи" />
+<h1 style="margin-top:20px">{{ lost.title }}</h1>
+<h4 style="margin-top:20px">Школа: {{ lost.schoolRelation.title }}</h4>
+<h4 style="margin-top:20px">Забрать можно: {{ lost.location }}</h4>
+<h4 style="margin-top:20px">Нашел: {{ lost.user.surname }} {{ lost.user.name }}</h4>
+{% endblock %}

@@ -3,6 +3,7 @@ from flask import Flask, render_template, redirect, request, abort
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from data.users import User
 from data.schools import School
+from data.lost import Lost
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, StringField, BooleanField, SubmitField, EmailField, PasswordField
 from wtforms.validators import DataRequired
@@ -204,10 +205,37 @@ def cancel_request(id):
     return redirect('/requests')
 
 
-@app.route('/lost')
+@app.route('/lostList')
 @login_required
-def lost():
+def lostList():
+    db_sess = db_session.create_session()
+    lost = db_sess.query(Lost).filter(Lost.school == current_user.school).order_by(Lost.userFound != current_user.id).all()
+    return render_template('lostList.html', lost=lost)
+
+
+@app.route('/lost/<int:id>')
+@login_required
+def lost(id):
+    db_sess = db_session.create_session()
+    lost = db_sess.query(Lost).filter(Lost.school == current_user.school, Lost.id == id).first()
+    return render_template('lost.html', lost=lost)
+
+
+@app.route('/addLost')
+@login_required
+def addLost():
     pass
+
+
+@app.route('/deleteLost/<int:id>')
+@login_required
+def deleteLost(id):
+    db_sess = db_session.create_session()
+    lost = db_sess.query(Lost).filter(Lost.id == id).first()
+    db_sess.delete(lost)
+    db_sess.commit()
+    lost = db_sess.query(Lost).filter(Lost.school == current_user.school).order_by(Lost.userFound != current_user.id).all()
+    return render_template('lostList.html', lost=lost)
 
 
 def security():  # TODO: проверка юзеров (в случае, если сайт введен в адресной строке)
@@ -217,10 +245,19 @@ def security():  # TODO: проверка юзеров (в случае, есл�
 if __name__ == '__main__':
     db_session.global_init('db/EMC.db')
     # db_sess = db_session.create_session()
+    # lost = Lost(
+    #    title='Планшет',
+    #    school=1,
+    #    location='кабинет физики',
+    #    imageLink="/static/img/example.png",
+    #    userFound=2
+    # )
+    # db_sess.add(lost)
+
     # user = User(
     #    surname='Власов',
     #    name='Илья',
-    #    position='Админ школы',
+    #    position='Создатель',
     #    email='chief@gmail.com',
     #    verified=2
     # )

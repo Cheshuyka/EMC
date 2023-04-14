@@ -11,5 +11,7 @@ class Lost(SqlAlchemyBase, SerializerMixin):
     title = sqlalchemy.Column(sqlalchemy.String)
     school = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("schools.id"))
     location = sqlalchemy.Column(sqlalchemy.Text)
-    imageLink = sqlalchemy.Column(sqlalchemy.String)  # <img src="..." class="img-thumbnail" alt="...">
+    imageLink = sqlalchemy.Column(sqlalchemy.String)
+    userFound = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     schoolRelation = orm.relationship('School')
+    user = orm.relationship('User')

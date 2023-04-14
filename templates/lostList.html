@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<a style="margin-top: 20px" href="/addLost" type="button" class="btn btn-outline-success">Добавить потерянную вещь</a>
+{% for item in lost %}
+<div class="card" style="width: 400px; margin: auto; margin-top: 30px">
+  <img style="height: 400px; width:400px;" src="{{ item.imageLink }}" class="card-img-top" alt="Фотография вещи" />
+  <div class="card-body">
+      <div class="card-header">
+        {{ item.title }}
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Забрать можно: {{ item.location }}</li>
+        <li class="list-group-item">Нашел: {{ item.user.surname }} {{ item.user.name }}</li>
+      </ul>
+  </div>
+  <a href="/lost/{{ item.id }}" type="button" class="btn btn-outline-primary">Перейти</a>
+  {% if current_user.id == item.userFound %}
+    <a style="margin-top: 20px" href="/deleteLost/{{ item.id }}" type="button" class="btn btn-outline-danger">Удалить</a>
+  {% endif %}
+</div>
+{% endfor %}
+{% endblock %}

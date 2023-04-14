@@ -20,6 +20,7 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     hashed_password = sqlalchemy.Column(sqlalchemy.String)
     whyCancelled = sqlalchemy.Column(sqlalchemy.String, default='Вам еще не отказывали')
     schoolRelation = orm.relationship('School')
+    lost = orm.relationship("Lost", back_populates='user')
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

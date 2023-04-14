@@ -8,7 +8,7 @@
   </div>
   <ul class="list-group list-group-flush">
     {% if current_user.position == 'Админ школы' %}
-    <li class="list-group-item">Школа {{ user.school }}</li>
+    <li class="list-group-item">Школа {{ user.schoolRelation.title }}</li>
     {% endif %}
     <li class="list-group-item">{{ user.position }}</li>
     {% if current_user.position == 'Учитель' %}
