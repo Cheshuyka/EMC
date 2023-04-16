@@ -242,11 +242,11 @@ def addLostForm():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             db_sess = db_session.create_session()
             lost = Lost()
-            if not(request.args['title']) or not(request.args['location']):
+            if not(request.form['title']) or not(request.form['location']):
                 return render_template('lostForm.html', message='Заполните все пропуски')
-            lost.title = request.args['title']
+            lost.title = request.form['title']
             lost.school = current_user.school
-            lost.location = request.args['location']
+            lost.location = request.form['location']
             lost.imageLink = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             lost.userFound = current_user.id
             db_sess.add(lost)

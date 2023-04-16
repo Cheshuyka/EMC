@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-<img src="{{ lost.imageLink }}" alt="Фотография вещи" />
+{% set image = '/' + lost.imageLink %}
+<img src="{{ image }}" alt="Фотография вещи" />
 <h1 style="margin-top:20px">{{ lost.title }}</h1>
 <h4 style="margin-top:20px">Школа: {{ lost.schoolRelation.title }}</h4>
 <h4 style="margin-top:20px">Забрать можно: {{ lost.location }}</h4>
