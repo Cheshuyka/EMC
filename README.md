@@ -1,2 +1,0 @@
-# EMC
-Education Modern Cloud
