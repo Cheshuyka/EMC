@@ -4,7 +4,7 @@ from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy import orm
 
 
-class Events(SqlAlchemyBase, SerializerMixin):
+class Events(SqlAlchemyBase, SerializerMixin):  # события
     __tablename__ = 'events'
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)

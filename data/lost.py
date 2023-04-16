@@ -4,7 +4,7 @@ from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy import orm
 
 
-class Lost(SqlAlchemyBase, SerializerMixin):
+class Lost(SqlAlchemyBase, SerializerMixin):  # потерянные вещи
     __tablename__ = 'lost'
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)

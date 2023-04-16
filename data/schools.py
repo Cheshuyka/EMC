@@ -4,7 +4,7 @@ from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy import orm
 
 
-class School(SqlAlchemyBase, SerializerMixin):
+class School(SqlAlchemyBase, SerializerMixin):  # школы
     __tablename__ = 'schools'
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)

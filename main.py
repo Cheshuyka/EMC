@@ -1,4 +1,4 @@
-from data import db_session
+from data import db_session, schools_api, users_api
 import os
 from flask import Flask, render_template, redirect, request, abort
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -6,9 +6,7 @@ from data.users import User
 from data.schools import School
 from data.events import Events
 from data.lost import Lost
-from flask_wtf import FlaskForm
-from wtforms import IntegerField, StringField, BooleanField, SubmitField, EmailField, PasswordField, TextAreaField
-from wtforms.validators import DataRequired
+from Forms.forms import *
 
 
 UPLOAD_FOLDER = 'static/img'
@@ -22,47 +20,18 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-class RegisterForm(FlaskForm):
-    name = StringField('Имя', validators=[DataRequired()])
-    surname = StringField('Фамилия', validators=[DataRequired()])
-    email = EmailField('Почта', validators=[DataRequired()])
-    password = PasswordField('Пароль', validators=[DataRequired()])
-    password_again = PasswordField('Повторите пароль', validators=[DataRequired()])
-    submit = SubmitField('Войти')
-
-
-class LoginForm(FlaskForm):
-    email = EmailField('Почта', validators=[DataRequired()])
-    password = PasswordField('Пароль', validators=[DataRequired()])
-    remember_me = BooleanField('Запомнить меня')
-    submit = SubmitField('Войти')
-
-
-class EventForm(FlaskForm):
-    title = StringField('Название', validators=[DataRequired()])
-    description = TextAreaField('Описание', validators=[DataRequired()])
-    classClub = StringField('Класс (пример: 8Б)')
-    submit = SubmitField('Добавить')
-
-
-class AddSchool(FlaskForm):
-    name = EmailField('Название школы', validators=[DataRequired()])
-    idAdmin = IntegerField('ID Админа', validators=[DataRequired()])
-    submit = SubmitField('Добавить')
-
-
 @login_manager.user_loader
-def load_user(user_id):
+def load_user(user_id):  # загрузка пользователя (flask_login)
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
 
 
-@app.route('/')
+@app.route('/')  # основная страница
 def index():
     return render_template('mainPage.html', title='EMC')
 
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'])  # страница для регистрации
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
@@ -83,10 +52,10 @@ def register():
         db_sess.commit()
         login_user(user)
         return redirect('/')
-    return render_template('register.html', title='Авторизация', form=form)
+    return render_template('register.html', title='Регистрация', form=form)
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])  # страница для входа в систему
 def login():
     form = LoginForm()
     if form.validate_on_submit():
@@ -97,18 +66,18 @@ def login():
             return redirect("/")
         return render_template('login.html',
                                message="Неправильный логин или пароль",
-                               form=form)
+                               form=form, title='Авторизация')
     return render_template('login.html', title='Авторизация', form=form)
 
 
-@app.route('/logout')
+@app.route('/logout')  # выход пользователя (flask_login)
 @login_required
 def logout():
     logout_user()
     return redirect("/")
 
 
-@app.route('/change_profile', methods=['POST', 'GET'])
+@app.route('/change_profile', methods=['POST', 'GET'])  # изменение профиля
 @login_required
 def change():
     db_sess = db_session.create_session()
@@ -131,7 +100,7 @@ def change():
     return redirect('/profile')
 
 
-@app.route('/send_request', methods=['POST', 'GET'])
+@app.route('/send_request', methods=['POST', 'GET'])  # отправка профиля на модерацию
 @login_required
 def send_request():
     db_sess = db_session.create_session()
@@ -153,13 +122,13 @@ def send_request():
     return render_template('profile.html', message='Не выбрана роль')
 
 
-@app.route('/profile')
+@app.route('/profile')  # страница с профилем
 @login_required
 def profile():
-    return render_template('profile.html', title='Авторизация')
+    return render_template('profile.html', title='Профиль')
 
 
-@app.route('/requests', methods=['GET', 'POST'])
+@app.route('/requests', methods=['GET', 'POST'])  # список профилей на модерации
 @login_required
 def requests():
     db_sess = db_session.create_session()
@@ -171,10 +140,10 @@ def requests():
                                            User.verified == 0, User.school == current_user.school).all()
     else:
         abort(403)
-    return render_template('requests.html', title='Авторизация', users=users)
+    return render_template('requests.html', title='Заявки', users=users)
 
 
-@app.route('/schools', methods=['GET', 'POST'])
+@app.route('/schools', methods=['GET', 'POST'])  # страница для добавления школы
 @login_required
 def schools():
     form = AddSchool()
@@ -196,7 +165,7 @@ def schools():
     return render_template('school.html', title='Добавление школы', form=form)
 
 
-@app.route('/accept_request/<int:id>')
+@app.route('/accept_request/<int:id>')  # принять заявку на модерации
 @login_required
 def accept_request(id):
     db_sess = db_session.create_session()
@@ -206,7 +175,7 @@ def accept_request(id):
     return redirect('/requests')
 
 
-@app.route('/cancel_request/<int:id>')
+@app.route('/cancel_request/<int:id>')  # отклонить заявку на модерации
 @login_required
 def cancel_request(id):
     db_sess = db_session.create_session()
@@ -218,40 +187,40 @@ def cancel_request(id):
     return redirect('/requests')
 
 
-@app.route('/lostList')
+@app.route('/lostList')  # список потерянных вещей
 @login_required
 def lostList():
     db_sess = db_session.create_session()
     lost = db_sess.query(Lost).filter(Lost.school == current_user.school).order_by(Lost.userFound != current_user.id).all()
-    return render_template('lostList.html', lost=lost)
+    return render_template('lostList.html', lost=lost, title='Список потеряшек')
 
 
-@app.route('/lost/<int:id>')
+@app.route('/lost/<int:id>')  # потерянная вещь (подробно)
 @login_required
 def lost(id):
     db_sess = db_session.create_session()
     lost = db_sess.query(Lost).filter(Lost.school == current_user.school, Lost.id == id).first()
-    return render_template('lost.html', lost=lost)
+    return render_template('lost.html', lost=lost, title='Потеряшка')
 
 
-@app.route('/addLostForm', methods=['GET', 'POST'])
+@app.route('/addLostForm', methods=['GET', 'POST'])  # страница для добавления потерянной вещи
 @login_required
 def addLostForm():
     if request.method == 'POST':
         if 'file' not in request.files:
-            return render_template('lostForm.html', message='Файл не выбран')
+            return render_template('lostForm.html', message='Файл не выбран', title='добавление потеряшки')
         file = request.files['file']
         if file.filename == '':
-            return render_template('lostForm.html', message='Файл не выбран')
+            return render_template('lostForm.html', message='Файл не выбран', title='добавление потеряшки')
         if not(allowed_file(file.filename)):
-            return render_template('lostForm.html', message='Расширение файла должно быть: [png, jpg, jpeg]')
+            return render_template('lostForm.html', message='Расширение файла должно быть: [png, jpg, jpeg]', title='добавление потеряшки')
         if file:
             filename = file.filename
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             db_sess = db_session.create_session()
             lost = Lost()
             if not(request.form['title']) or not(request.form['location']):
-                return render_template('lostForm.html', message='Заполните все пропуски')
+                return render_template('lostForm.html', message='Заполните все пропуски', title='добавление потеряшки')
             lost.title = request.form['title']
             lost.school = current_user.school
             lost.location = request.form['location']
@@ -260,10 +229,10 @@ def addLostForm():
             db_sess.add(lost)
             db_sess.commit()
             return redirect('/lostList')
-    return render_template('lostForm.html')
+    return render_template('lostForm.html', title='добавление потеряшки')
 
 
-@app.route('/addEventForm', methods=['GET', 'POST'])
+@app.route('/addEventForm', methods=['GET', 'POST'])  # страница для добавления события
 def addEventForm():
     form = EventForm()
     if form.validate_on_submit():
@@ -280,16 +249,16 @@ def addEventForm():
     return render_template('addEvent.html', title='Добавление события', form=form)
 
 
-@app.route('/eventList', methods=['GET', 'POST'])
+@app.route('/eventList', methods=['GET', 'POST'])  # список событий
 def eventList():
     db_sess = db_session.create_session()
     events = db_sess.query(Events).filter(Events.school == current_user.school,
                                           Events.classClub == current_user.classClub).\
         order_by(Events.userCreated != current_user.id).all()
-    return render_template('eventList.html', events=events)
+    return render_template('eventList.html', events=events, title='Список событий')
 
 
-@app.route('/deleteEvent/<int:id>')
+@app.route('/deleteEvent/<int:id>')  # удаление события
 @login_required
 def deleteEvent(id):
     db_sess = db_session.create_session()
@@ -299,11 +268,11 @@ def deleteEvent(id):
     return redirect('/eventList')
 
 
-def allowed_file(filename):
+def allowed_file(filename):  # проверка правильности расширения файла
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/deleteLost/<int:id>')
+@app.route('/deleteLost/<int:id>')  # удаление потерянной вещи
 @login_required
 def deleteLost(id):
     db_sess = db_session.create_session()
@@ -314,22 +283,8 @@ def deleteLost(id):
     return redirect('/lostList')
 
 
-def security():  # TODO: проверка юзеров (в случае, если сайт введен в адресной строке)
-    pass
-
-
 if __name__ == '__main__':
     db_session.global_init('db/EMC.db')
-    # db_sess = db_session.create_session()
-
-    #user = User(
-    #    surname='Власов',
-    #    name='Илья',
-    #    position='Создатель',
-    #    email='chief@gmail.com',
-    #    verified=2
-    # )
-    #user.set_password('268268268268a')
-    #db_sess.add(user)
-    #db_sess.commit()
+    app.register_blueprint(schools_api.blueprint)
+    app.register_blueprint(users_api.blueprint)
     app.run()
