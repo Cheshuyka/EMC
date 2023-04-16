@@ -15,7 +15,7 @@
             {% if current_user.is_authenticated %}
                 {% if current_user.verified == 2 %}
                     <a href="/lostList" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Потерянные вещи</a>
-                    <a href="/events" style="margin-left: 20px" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Мероприятия</a>
+                    <a href="/eventList" style="margin-left: 20px" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Мероприятия</a>
                     <a href="/requests" style="margin-left: 20px" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Заявки</a>
                     {% if current_user.position == 'Создатель' %}
                     <a href="/schools" style="margin-left: 20px" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Школы</a>
