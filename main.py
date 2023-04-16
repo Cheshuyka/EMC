@@ -4,9 +4,10 @@ from flask import Flask, render_template, redirect, request, abort
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from data.users import User
 from data.schools import School
+from data.events import Events
 from data.lost import Lost
 from flask_wtf import FlaskForm
-from wtforms import IntegerField, StringField, BooleanField, SubmitField, EmailField, PasswordField
+from wtforms import IntegerField, StringField, BooleanField, SubmitField, EmailField, PasswordField, TextAreaField
 from wtforms.validators import DataRequired
 
 
@@ -35,6 +36,13 @@ class LoginForm(FlaskForm):
     password = PasswordField('Пароль', validators=[DataRequired()])
     remember_me = BooleanField('Запомнить меня')
     submit = SubmitField('Войти')
+
+
+class EventForm(FlaskForm):
+    title = StringField('Название', validators=[DataRequired()])
+    description = TextAreaField('Описание', validators=[DataRequired()])
+    classClub = StringField('Класс (пример: 8Б)')
+    submit = SubmitField('Добавить')
 
 
 class AddSchool(FlaskForm):
@@ -255,15 +263,47 @@ def addLostForm():
     return render_template('lostForm.html')
 
 
+@app.route('/addEventForm', methods=['GET', 'POST'])
+def addEventForm():
+    form = EventForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        event = Events()
+        event.title = form.title.data
+        event.description = form.description.data
+        event.school = current_user.school
+        event.userCreated = current_user.id
+        event.classClub = form.classClub.data
+        db_sess.add(event)
+        db_sess.commit()
+    return render_template('addEvent.html', title='Добавление события', form=form)
+
+
+@app.route('/eventList', methods=['GET', 'POST'])
+def eventList():
+    db_sess = db_session.create_session()
+    events = db_sess.query(Events).filter(Events.school == current_user.school,
+                                          Events.classClub == current_user.classClub).\
+        order_by(Lost.userCreated != current_user.id).all()
+    return render_template('eventList.html', events=events)
+
+
+@app.route('/deleteEvent/<int:id>')
+@login_required
+def cancel_request(id):
+    db_sess = db_session.create_session()
+    event = db_sess.query(Events).filter(Events.id == id).first()
+    db_sess.delete(event)
+    db_sess.commit()
+    events = db_sess.query(Events).filter(Events.school == current_user.school,
+                                          Events.classClub == current_user.classClub).\
+        order_by(Lost.userCreated != current_user.id).all()
+    return redirect('/eventList')
+
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-@app.route('/addLost')
-@login_required
-def addLost():
-    return redirect('/lostList')
 
 
 @app.route('/deleteLost/<int:id>')
@@ -273,8 +313,7 @@ def deleteLost(id):
     lost = db_sess.query(Lost).filter(Lost.id == id).first()
     db_sess.delete(lost)
     db_sess.commit()
-    lost = db_sess.query(Lost).filter(Lost.school == current_user.school).order_by(Lost.userFound != current_user.id).all()
-    return render_template('lostList.html', lost=lost)
+    return redirect('/lostList')
 
 
 def security():  # TODO: проверка юзеров (в случае, если сайт введен в адресной строке)
@@ -283,24 +322,16 @@ def security():  # TODO: проверка юзеров (в случае, есл�
 
 if __name__ == '__main__':
     db_session.global_init('db/EMC.db')
-    # db_sess = db_session.create_session()
-    # lost = Lost(
-    #    title='Планшет',
-    #    school=1,
-    #    location='кабинет физики',
-    #    imageLink="/static/img/example.png",
-    #    userFound=2
-    # )
-    # db_sess.add(lost)
+    db_sess = db_session.create_session()
 
-    # user = User(
-    #    surname='Власов',
-    #    name='Илья',
-    #    position='Создатель',
-    #    email='chief@gmail.com',
-    #    verified=2
-    # )
-    # user.set_password('268268268268a')
-    # db_sess.add(user)
-    # db_sess.commit()
+    user = User(
+        surname='Власов',
+        name='Илья',
+        position='Создатель',
+        email='chief@gmail.com',
+        verified=2
+     )
+    user.set_password('268268268268a')
+    db_sess.add(user)
+    db_sess.commit()
     app.run()

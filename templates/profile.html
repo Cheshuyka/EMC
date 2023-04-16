@@ -3,6 +3,7 @@
 {% block content %}
     <div>
         <h1 style="margin-top: 20px">Профиль</h1>
+        <h2 style="margin-top: 20px">ID пользователя: {{ current_user.id }}</h2>
         <a type="button" class="btn btn-outline-info" href="/send_request">Отправить заявку</a>
     </div>
     <form action="change_profile" method="get | post">

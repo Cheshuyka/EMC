@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<a style="margin-top: 20px" href="/addEventForm" type="button" class="btn btn-outline-success">Добавить событие</a>
+{% for event in events %}
+<div class="card" style="width: 600px;">
+  <div class="card-body">
+    <h5 class="card-title">{{ event.title }}</h5>
+    <p class="card-text">{{ event.description }}</p>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">{{ event.user.surname }} {{ event.user.name }}</li>
+    <li class="list-group-item">{{ event.classCLub }}</li>
+    <li class="list-group-item">{{ event.school.title }}</li>
+    {% if current_user.id == event.userFound %}
+    <li class="list-group-item"><a href="/deleteEvent/{{ event.id }}" type="button" class="btn btn-outline-danger">Удалить</a></li>
+    {% endif %}
+  </ul>
+</div>
+{% endfor %}
+{% endblock %}

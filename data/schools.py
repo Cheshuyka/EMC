@@ -11,3 +11,4 @@ class School(SqlAlchemyBase, SerializerMixin):
     title = sqlalchemy.Column(sqlalchemy.String, unique=True)
     user = orm.relationship("User", back_populates='schoolRelation')
     lost = orm.relationship("Lost", back_populates='schoolRelation')
+    event = orm.relationship("Events", back_populates='schoolRelation')
