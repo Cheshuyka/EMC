@@ -1,4 +1,5 @@
 from data import db_session
+import os
 from flask import Flask, render_template, redirect, request, abort
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from data.users import User
@@ -9,8 +10,12 @@ from wtforms import IntegerField, StringField, BooleanField, SubmitField, EmailF
 from wtforms.validators import DataRequired
 
 
+UPLOAD_FOLDER = 'static/img'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'you_know_its_a_secret_key_really_secret'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -221,10 +226,44 @@ def lost(id):
     return render_template('lost.html', lost=lost)
 
 
+@app.route('/addLostForm', methods=['GET', 'POST'])
+@login_required
+def addLostForm():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return render_template('lostForm.html', message='Файл не выбран')
+        file = request.files['file']
+        if file.filename == '':
+            return render_template('lostForm.html', message='Файл не выбран')
+        if not(allowed_file(file.filename)):
+            return render_template('lostForm.html', message='Расширение файла должно быть: [png, jpg, jpeg]')
+        if file:
+            filename = file.filename
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            db_sess = db_session.create_session()
+            lost = Lost()
+            if not(request.args['title']) or not(request.args['location']):
+                return render_template('lostForm.html', message='Заполните все пропуски')
+            lost.title = request.args['title']
+            lost.school = current_user.school
+            lost.location = request.args['location']
+            lost.imageLink = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            lost.userFound = current_user.id
+            db_sess.add(lost)
+            db_sess.commit()
+            return redirect('/lostList')
+    return render_template('lostForm.html')
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 @app.route('/addLost')
 @login_required
 def addLost():
-    pass
+    return redirect('/lostList')
 
 
 @app.route('/deleteLost/<int:id>')

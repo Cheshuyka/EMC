@@ -10,7 +10,7 @@ class Lost(SqlAlchemyBase, SerializerMixin):
                            primary_key=True, autoincrement=True)
     title = sqlalchemy.Column(sqlalchemy.String)
     school = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("schools.id"))
-    location = sqlalchemy.Column(sqlalchemy.Text)
+    location = sqlalchemy.Column(sqlalchemy.String)
     imageLink = sqlalchemy.Column(sqlalchemy.String)
     userFound = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     schoolRelation = orm.relationship('School')

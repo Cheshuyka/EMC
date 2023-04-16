@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<a style="margin-top: 20px" href="/addLost" type="button" class="btn btn-outline-success">Добавить потерянную вещь</a>
+<a style="margin-top: 20px" href="/addLostForm" type="button" class="btn btn-outline-success">Добавить потерянную вещь</a>
 {% for item in lost %}
 <div class="card" style="width: 400px; margin: auto; margin-top: 30px">
   <img style="height: 400px; width:400px;" src="{{ item.imageLink }}" class="card-img-top" alt="Фотография вещи" />

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form action="addLostForm" method="post" enctype=multipart/form-data>
+    <div class="input-group mb-3" style="margin-top: 20px">
+        <span class="input-group-text link-offset-2 link-underline link-underline-opacity-0">Название</span>
+        <input type="text" name="title" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+    </div>
+    <div class="input-group mb-3" style="margin-top: 20px">
+        <span class="input-group-text link-offset-2 link-underline link-underline-opacity-0">Место</span>
+        <input type="text" name="location" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon2">
+    </div>
+    <div class="input-group mb-3" style="margin-top: 20px">
+        <span class="input-group-text link-offset-2 link-underline link-underline-opacity-0">Картинка</span>
+        <input type="file" name="file" class="form-control" aria-describedby="basic-addon3">
+    </div>
+    <input type="submit" value="Сохранить изменения" class="btn btn-outline-success">
+    </form>
+    <div style="margin-top: 20px;">{{ message }}</div>
+{% endblock %}
